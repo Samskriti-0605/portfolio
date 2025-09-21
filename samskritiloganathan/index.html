@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Samskriti L - Portfolio</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* ---------- About layout ---------- */
+    .about-container {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 30px;
+    }
+    .about-text {
+      flex: 2;
+      min-width: 250px;
+    }
+    .about-container .profile-flip {
+      flex: 1;
+      max-width: 220px;
+    }
+
+    /* ---------- Profile flip card ---------- */
+    .profile-flip {
+      width: 180px;
+      height: 220px;
+      perspective: 1000px;
+    }
+    .flip-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+    }
+    .profile-flip:hover .flip-inner {
+      transform: rotateY(180deg);
+    }
+    .flip-front,
+    .flip-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .flip-front img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .flip-back {
+      background: var(--card-bg);
+      color: var(--text);
+      transform: rotateY(180deg);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+    }
+    .flip-back h3 {
+      margin-bottom: 8px;
+      font-size: 1.2rem;
+    }
+    .flip-back p {
+      font-size: 0.9rem;
+      color: #bbb;
+    }
+
+    /* ---------- General ---------- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      scroll-behavior: smooth;
+      --bg: #0d0d0d;
+      --text: #e0e0e0;
+      --card-bg: rgba(40,40,40,0.9);
+      --card-bg-alt: rgba(60,60,60,0.9);
+      background-color: var(--bg);
+      color: var(--text);
+    }
+    body.light-mode {
+      --bg: #f5f5f5;
+      --text: #222;
+      --card-bg: #fff;
+      --card-bg-alt: #f0f0f0;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(120deg, #1a1a1a, #333333, #4d4d4d, #666666);
+      background-size: 400% 400%;
+      z-index: -1;
+      animation: gradientBackground 15s ease infinite;
+    }
+    @keyframes gradientBackground {
+      0% {background-position: 0% 50%}
+      50% {background-position: 100% 50%}
+      100% {background-position: 0% 50%}
+    }
+
+    /* ---------- Header ---------- */
+    .header {
+      background: rgba(20,20,20,0.8);
+      padding: 20px;
+      text-align: center;
+      position: relative;
+    }
+    .header h1 {
+      font-size: 2.5rem;
+      color: #f5f5f5;
+    }
+    .header p {
+      font-size: 1.2rem;
+      color: #bfbfbf;
+    }
+    .typing {
+      color: #ff5555;
+      font-weight: bold;
+    }
+
+    /* ---------- Theme Toggle ---------- */
+    .theme-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: transparent;
+      border: none;
+      color: #f5f5f5;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    /* ---------- Navbar ---------- */
+    .navbar {
+      background: rgba(30,30,30,0.8);
+      padding: 15px;
+      text-align: center;
+    }
+    .navbar ul {
+      list-style: none;
+    }
+    .navbar li {
+      display: inline;
+      margin: 0 15px;
+    }
+    .navbar a {
+      color: #e6e6e6;
+      text-decoration: none;
+      transition: color .3s ease;
+    }
+    .navbar a:hover {
+      color: #c0c0c0;
+    }
+
+    /* ---------- Sections ---------- */
+    .section {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+      padding: 40px;
+      max-width: 900px;
+      margin: 50px auto;
+      background: var(--card-bg);
+      border-radius: 8px;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.3);
+    }
+    .section.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .section h2 {
+      font-size: 1.8rem;
+      color: var(--text);
+      margin-bottom: 15px;
+    }
+
+    /* ---------- Project & Paper Cards ---------- */
+    .project {
+      perspective: 1000px;
+      margin: 20px 0;
+    }
+    .card {
+      width: 100%;
+      height: 250px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s;
+      cursor: pointer;
+    }
+    .card:hover {
+      transform: rotateY(180deg);
+    }
+    .card .front,
+    .card .back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+    }
+    .card .front {
+      background: var(--card-bg);
+      color: var(--text);
+    }
+    .card .back {
+      background: var(--card-bg-alt);
+      color: var(--text);
+      transform: rotateY(180deg);
+      overflow-y: auto;
+    }
+
+    /* ---------- Certificates Grid ---------- */
+    .cert-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .cert-card {
+      perspective: 1000px;
+      cursor: pointer;
+      position: relative;
+      width: 100%;
+      height: 250px;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+    }
+    .cert-card:hover {
+      transform: rotateY(180deg);
+    }
+    .cert-card .front,
+    .cert-card .back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 10px;
+      backface-visibility: hidden;
+      top: 0;
+      left: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+      text-align: center;
+    }
+    .cert-card .front {
+      background: var(--card-bg);
+      color: var(--text);
+    }
+    .cert-card .back {
+      background: var(--card-bg-alt);
+      transform: rotateY(180deg);
+      overflow: hidden;
+    }
+    .cert-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 10px;
+    }
+
+    /* ---------- Lightbox ---------- */
+    .lightbox {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      justify-content: center;
+      align-items: center;
+    }
+    .lightbox img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(255,255,255,0.3);
+    }
+    .lightbox:target {
+      display: flex;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 2rem;
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .lightbox-close:hover {
+      color: #ff5555;
+    }
+
+    /* ---------- Contact Form ---------- */
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .contact-form label {
+      font-weight: bold;
+      color: var(--text);
+      text-align: left;
+    }
+    .contact-form input,
+    .contact-form textarea {
+      padding: 10px;
+      border: 1px solid #888;
+      border-radius: 5px;
+      background: var(--card-bg);
+      color: var(--text);
+      width: 100%;
+    }
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      outline: none;
+      border-color: #ff5555;
+    }
+    .contact-form button {
+      background: #ff5555;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background .3s ease;
+    }
+    .contact-form button:hover {
+      background: #e04444;
+    }
+
+    /* ---------- Footer ---------- */
+    .footer {
+      background: rgba(20,20,20,0.8);
+      color: #f5f5f5;
+      text-align: center;
+      padding: 20px;
+    }
+    .social-icons a {
+      margin: 0 10px;
+      color: #f5f5f5;
+      font-size: 1.5rem;
+      transition: color .3s;
+    }
+    .social-icons a:hover {
+      color: #ff5555;
+    }
+
+    /* ---------- Back to Top ---------- */
+    .back-to-top {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(40,40,40,0.8);
+      color: #f5f5f5;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 15px;
+      cursor: pointer;
+      display: none;
+    }
+
+    a {
+      color: #e6e6e6;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <button id="themeToggle" class="theme-toggle"><i class="fas fa-moon"></i></button>
+    <h1>SAMSKRITI L</h1>
+    <p><span id="typing" class="typing"></span></p>
+  </header>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#education">Education</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#papers">Paper Presentations</a></li>
+      <li><a href="#certificates">Certificates</a></li>
+      <li><a href="#memberships">Memberships</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- About -->
+  <section id="about" class="section">
+    <h2>About Me</h2>
+    <div class="about-container">
+      <div class="about-text">
+        <p>
+          I am passionate about UI design and creative problem-solving, with a strong commitment to continuous learning and excellence in my work. I enjoy taking initiative, exploring new ideas, and applying my software development skills to build user-friendly, impactful solutions.
+        </p>
+      </div>
+
+      <!-- Profile flip card -->
+      <div class="profile-flip">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <img src="images/profile.jpg" alt="Samskriti L">
+          </div>
+          <div class="flip-back">
+            <h3>Samskriti L</h3>
+            <p>B.Tech </p>
+            <p>ARTIFICIAL INTELLIGENCE AND DATA SCIENCE</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills -->
+  <section id="skills" class="section">
+    <h2>Skills</h2>
+    <ul>
+      <li><strong>Programming Languages:</strong> C, Python, Java</li>
+      <li><strong>Frontend & Design:</strong> HTML, CSS, JavaScript, ReactJS, Figma (UI/UX)</li>
+      <li><strong>Databases:</strong> MySQL</li>
+      <li><strong>Tools:</strong> Blender, Video Editing, Animation</li>
+      <li><strong>Languages:</strong> Tamil, English</li>
+    </ul>
+  </section>
+
+  <!-- Education -->
+  <section id="education" class="section">
+    <h2>Education</h2>
+    <ul>
+      <li><strong>B.Tech in Artificial Intelligence and Data Science</strong> - Bannari Amman Institute of Technology (2023 - Present), CGPA: 7.36</li>
+      <li><strong>HSC (2023):</strong> Saratha Higher Secondary School, 71.3%</li>
+      <li><strong>SSLC (2020):</strong> Saratha Higher Secondary School</li>
+    </ul>
+  </section>
+
+  
+
+  <!-- Papers -->
+  <section id="papers" class="section">
+    <h2>Project</h2>
+    <div class="project">
+      <div class="card">
+        <div class="front"><h3>AI Powered Shopping Assistance</h3></div>
+        
+         <div class="back"><p>Built with React, FastAPI, and PostgreSQL.</p>
+           <P>Features: browsing dress collections, wishlist, profile, cart, AI chatbot for product discovery & outfit suggestions.</p>   
+          <P> role: Led frontend with React + Tailwind CSS, focusing on UI/UX, responsive pages, and seamless navigation </P>
+      </div>
+    </div>
+    <div class="project">
+      <div class="card">
+        <div class="front"><h3>Smart Agriculture Platform</h3></div>
+        <div class="back"><p>Built with React.js, Node.js, Django REST APIs, and AI models (TensorFlow/PyTorch).</p>
+          <P> Features: crop disease detection, yield prediction, weather & market insights.</P>
+          <P>Role: Designed a mobile-first UI with voice + icon-based navigation for low-literacy farmers; deployed on Google Cloud with MongoDB for scalability.</P>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section id="projects" class="section">
+    <h2>Paper Presentations</h2>
+    <div class="project">
+      <div class="card">
+        <div class="front"><h3>AI Based Healthcare</h3></div>
+        <div class="back"><p>Developed a prototype to assist elderly care.</p>
+          <P>Features: multilingual voice assistant, medicine reminders, alerts for missed doses, emergency ambulance access, and SMS fallback.</p>
+          <P>Role: Led frontend development, designing a responsive, accessible UI with React and Tailwind CSS, integrating backend APIs and voice-interaction features for a polished, user-friendly prototype.</P>
+      </div>
+    </div>
+    <div class="project">
+      <div class="card">
+        <div class="front"><h3>Smart RFID Door Lock System</h3></div>
+        <div class="back"><p>Concept for a secure, contactless door access system using RFID technology.</p>
+          
+          <P>Allows authorized entry via RFID cards/tags, logs entry records, and integrates with mobile alerts for enhanced security.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Certificates -->
+  <section id="certificates" class="section">
+    <h2>Certificates</h2>
+    <div class="cert-grid">
+      <div class="cert-card"><div class="front"><h3>HackerRank – Problem Solving (Basic)</h3></div><div class="back"><a href="#img1"><img src="images/certificates/problem-solving.png"></a></div></div>
+      <div class="cert-card"><div class="front"><h3>HackerRank – Python (Basic)</h3></div><div class="back"><a href="#img2"><img src="images/certificates/python-basic.png"></a></div></div>
+      <div class="cert-card"><div class="front"><h3>Google Cloud – Responsible AI</h3></div><div class="back"><a href="#img3"><img src="images/certificates/responsible-ai.png"></a></div></div>
+      <div class="cert-card"><div class="front"><h3>MinnaLearn – Introduction to AI</h3></div><div class="back"><a href="#img4"><img src="images/certificates/minna-ai.png"></a></div></div>
+      <div class="cert-card"><div class="front"><h3>LearnTube.ai – Introduction to Python</h3></div><div class="back"><a href="#img5"><img src="images/certificates/learntube-python.png"></a></div></div>
+      <div class="cert-card"><div class="front"><h3>Intellectual Property UTSAV</h3></div><div class="back"><a href="#img6"><img src="images/certificates/ip-utsav.png"></a></div></div>
+      <div class="cert-card"><div class="front"><h3>HACKSPARK Codeathon</h3></div><div class="back"><a href="#img7"><img src="images/certificates/hackpsark-codeathon.png"></a></div></div>
+      <div class="cert-card"><div class="front"><h3>Adobe India Hackathon</h3></div><div class="back"><a href="#img8"><img src="images/certificates/adobe-hackathon.png"></a></div></div>
+      <div class="cert-card"><div class="front"><h3>Career Catalyst 3.0</h3></div><div class="back"><a href="#img9"><img src="images/certificates/career-catalyst.png"></a></div></div>
+    </div>
+  </section>
+
+  <!-- Memberships -->
+  <section id="memberships" class="section">
+    <h2>Memberships & Academic Activities</h2>
+    <p>Member, International Association of Engineers (IAENG)</p>
+    <p>Completed Credit Course: Compound Based UI and UX Development, 2024</p>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="section">
+    <h2>Contact</h2>
+    <form action="https://formspree.io/f/xqayzkbo" method="POST" class="contact-form">
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" required>
+
+      <label for="email">Email</label>
+      <input type="email" id="email" name="_replyto" required>
+
+      <label for="message">Message</label>
+      <textarea id="message" name="message" rows="5" required></textarea>
+
+      <button type="submit">Send Message</button>
+    </form>
+    <p style="margin-top:20px;">
+      <a href="files/Samskriti_Resume.pdf" download class="resume-btn">📄 Download Resume</a>
+    </p>
+  </section>
+
+  <!-- Back to Top -->
+  <button id="backToTop" class="back-to-top">↑</button>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>© 2024 Samskriti L. All rights reserved.</p>
+    <div class="social-icons">
+      <a href="http://www.linkedin.com/in/samskriti-loganathan-0605s" target="_blank"><i class="fab fa-linkedin"></i></a>
+      <a href="https://github.com/Samskriti-0605" target="_blank"><i class="fab fa-github"></i></a>
+      <a href="https://leetcode.com/u/Samskritii/" target="_blank"><i class="fas fa-code"></i></a>
+      <a href="https://www.hackerrank.com/profile/samskriti0605" target="_blank"><i class="fab fa-hackerrank"></i></a>
+    </div>
+  </footer>
+
+  <!-- Lightbox Overlays -->
+  <div id="img1" class="lightbox"><a href="#" class="lightbox-close">&times;</a><img src="images/certificates/problem-solving.png"></div>
+  <div id="img2" class="lightbox"><a href="#" class="lightbox-close">&times;</a><img src="images/certificates/python-basic.png"></div>
+  <div id="img3" class="lightbox"><a href="#" class="lightbox-close">&times;</a><img src="images/certificates/responsible-ai.png"></div>
+  <div id="img4" class="lightbox"><a href="#" class="lightbox-close">&times;</a><img src="images/certificates/minna-ai.png"></div>
+  <div id="img5" class="lightbox"><a href="#" class="lightbox-close">&times;</a><img src="images/certificates/learntube-python.png"></div>
+  <div id="img6" class="lightbox"><a href="#" class="lightbox-close">&times;</a><img src="images/certificates/ip-utsav.png"></div>
+  <div id="img7" class="lightbox"><a href="#" class="lightbox-close">&times;</a><img src="images/certificates/hackpsark-codeathon.png"></div>
+  <div id="img8" class="lightbox"><a href="#" class="lightbox-close">&times;</a><img src="images/certificates/adobe-hackathon.png"></div>
+  <div id="img9" class="lightbox"><a href="#" class="lightbox-close">&times;</a><img src="images/certificates/career-catalyst.png"></div>
+
+  <script>
+    // Smooth reveal
+    const sections = document.querySelectorAll('.section');
+    const observer = new IntersectionObserver(entries=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          entry.target.classList.add('revealed');
+        }
+      });
+    },{threshold:0.2});
+    sections.forEach(section=>observer.observe(section));
+
+    // Back to Top
+    const backToTop = document.getElementById("backToTop");
+    window.addEventListener("scroll",()=>{
+      backToTop.style.display=window.scrollY>300?"block":"none";
+    });
+    backToTop.addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));
+
+    // Typing Animation
+    const roles=["UI/UX Designer","Data Scientist","Animator"];
+    let roleIndex=0, charIndex=0, currentRole="", isDeleting=false;
+    function typeEffect(){
+      currentRole=roles[roleIndex];
+      const typingEl=document.getElementById("typing");
+      if(!isDeleting){
+        typingEl.textContent=currentRole.substring(0,charIndex+1);
+        charIndex++;
+        if(charIndex===currentRole.length){
+          isDeleting=true;
+          setTimeout(typeEffect,1500);
+          return;
+        }
+      }else{
+        typingEl.textContent=currentRole.substring(0,charIndex-1);
+        charIndex--;
+        if(charIndex===0){
+          isDeleting=false;
+          roleIndex=(roleIndex+1)%roles.length;
+        }
+      }
+      setTimeout(typeEffect,isDeleting?100:150);
+    }
+    document.addEventListener("DOMContentLoaded",typeEffect);
+
+    // Dark/Light toggle
+    const themeToggle=document.getElementById("themeToggle");
+    themeToggle.addEventListener("click",()=>{
+      document.body.classList.toggle("light-mode");
+      themeToggle.innerHTML=document.body.classList.contains("light-mode")
+        ?'<i class="fas fa-sun"></i>'
+        :'<i class="fas fa-moon"></i>';
+    });
+  </script>
+</body>
+</html>
