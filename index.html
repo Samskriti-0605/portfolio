@@ -461,7 +461,7 @@
     <h2>Education</h2>
     <ul>
       <li><strong>B.Tech in Artificial Intelligence and Data Science</strong> - Bannari Amman Institute of Technology (2023 - Present), CGPA: 7.36</li>
-      <li><strong>HSC (2023):</strong> Saratha Higher Secondary School, 71.3%</li>
+      <li><strong>HSC (2023):</strong> Saratha Higher Secondary School, 76.3%</li>
       <li><strong>SSLC (2020):</strong> Saratha Higher Secondary School</li>
     </ul>
   </section>
@@ -598,35 +598,31 @@
     });
     backToTop.addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));
 
-  
- 
-  // Typing Animation
-  const roles = ["UI/UX Designer", "Animator" , " Editor"];
-  let roleIndex=0, charIndex=0, currentRole="", isDeleting=false;
-  function typeEffect(){
-    currentRole=roles[roleIndex];
-    const typingEl=document.getElementById("typing");
-    if(!isDeleting){
-      typingEl.textContent=currentRole.substring(0,charIndex+1);
-      charIndex++;
-      if(charIndex===currentRole.length){
-        isDeleting=true;
-        setTimeout(typeEffect,1500);
-        return;
+    // Typing Animation
+    const roles=["UI/UX Designer","Animator","Editor"];
+    let roleIndex=0, charIndex=0, currentRole="", isDeleting=false;
+    function typeEffect(){
+      currentRole=roles[roleIndex];
+      const typingEl=document.getElementById("typing");
+      if(!isDeleting){
+        typingEl.textContent=currentRole.substring(0,charIndex+1);
+        charIndex++;
+        if(charIndex===currentRole.length){
+          isDeleting=true;
+          setTimeout(typeEffect,1500);
+          return;
+        }
+      }else{
+        typingEl.textContent=currentRole.substring(0,charIndex-1);
+        charIndex--;
+        if(charIndex===0){
+          isDeleting=false;
+          roleIndex=(roleIndex+1)%roles.length;
+        }
       }
-    }else{
-      typingEl.textContent=currentRole.substring(0,charIndex-1);
-      charIndex--;
-      if(charIndex===0){
-        isDeleting=false;
-        roleIndex=(roleIndex+1)%roles.length;
-      }
+      setTimeout(typeEffect,isDeleting?100:150);
     }
-    setTimeout(typeEffect,isDeleting?100:150);
-  }
-  document.addEventListener("DOMContentLoaded",typeEffect);
-
-
+    document.addEventListener("DOMContentLoaded",typeEffect);
 
     // Dark/Light toggle
     const themeToggle=document.getElementById("themeToggle");
@@ -639,3 +635,5 @@
   </script>
 </body>
 </html>
+
+in this remove the data scientist
