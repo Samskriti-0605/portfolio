@@ -598,31 +598,35 @@
     });
     backToTop.addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));
 
-    // Typing Animation
-    const roles=["UI/UX Designer","Data Scientist","Animator"];
-    let roleIndex=0, charIndex=0, currentRole="", isDeleting=false;
-    function typeEffect(){
-      currentRole=roles[roleIndex];
-      const typingEl=document.getElementById("typing");
-      if(!isDeleting){
-        typingEl.textContent=currentRole.substring(0,charIndex+1);
-        charIndex++;
-        if(charIndex===currentRole.length){
-          isDeleting=true;
-          setTimeout(typeEffect,1500);
-          return;
-        }
-      }else{
-        typingEl.textContent=currentRole.substring(0,charIndex-1);
-        charIndex--;
-        if(charIndex===0){
-          isDeleting=false;
-          roleIndex=(roleIndex+1)%roles.length;
-        }
+  
+ 
+  // Typing Animation
+  const roles = ["UI/UX Designer", "Animator"];
+  let roleIndex=0, charIndex=0, currentRole="", isDeleting=false;
+  function typeEffect(){
+    currentRole=roles[roleIndex];
+    const typingEl=document.getElementById("typing");
+    if(!isDeleting){
+      typingEl.textContent=currentRole.substring(0,charIndex+1);
+      charIndex++;
+      if(charIndex===currentRole.length){
+        isDeleting=true;
+        setTimeout(typeEffect,1500);
+        return;
       }
-      setTimeout(typeEffect,isDeleting?100:150);
+    }else{
+      typingEl.textContent=currentRole.substring(0,charIndex-1);
+      charIndex--;
+      if(charIndex===0){
+        isDeleting=false;
+        roleIndex=(roleIndex+1)%roles.length;
+      }
     }
-    document.addEventListener("DOMContentLoaded",typeEffect);
+    setTimeout(typeEffect,isDeleting?100:150);
+  }
+  document.addEventListener("DOMContentLoaded",typeEffect);
+
+
 
     // Dark/Light toggle
     const themeToggle=document.getElementById("themeToggle");
